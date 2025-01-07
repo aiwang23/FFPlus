@@ -15,13 +15,13 @@ int main(int argc, char **argv)
 	printErrMsg(__FUNCTION__, __LINE__, 0);
 
 	// 打开输入文件
-	formatContext ifmtctx("C:\\Users\\10484\\Desktop\\ffmpeg_learn\\ffmpeg学习\\video_cp.mp4");
+	formatContext ifmtctx(argv[1]);
 	// 打印输入文件信息
 	ifmtctx.dump();
 
 	// 创建输出文件
 	formatContext ofmtctx;
-	ofmtctx.allocOutput("out.mp4");
+	ofmtctx.allocOutput(argv[2]);
 	// 新增视频流
 	stream ovi_st = ofmtctx.copyStream(ifmtctx.videoStream());
 	// 新增音频流
