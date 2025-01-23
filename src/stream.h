@@ -1,10 +1,11 @@
-ï»¿//
+//
 // Created by 10484 on 25-1-1.
 //
 
 #ifndef STREAM_H
 #define STREAM_H
 
+#include <string>
 
 extern "C" {
 #include <libavformat/avformat.h>
@@ -15,99 +16,149 @@ class deCodecContext;
 class enCodecContext;
 
 /**
- * ç æµ
+ * ÂëÁ÷
  */
 class stream
 {
 public:
 	stream();
 
-	explicit stream(AVStream *st);
+	explicit stream(AVStream* st);
 
 	~stream();
 
 	/**
-	 * ä»ç¼–ç å™¨codec_context å¤åˆ¶å‚æ•°åˆ°æ­¤ç æµ
-	 * @param codec_context ç¼–ç å™¨
-	 * @return é”™è¯¯ç ï¼Œå¯ä½¿ç”¨ reCode2Msg è·å–é”™è¯¯ä¿¡æ¯
+	 * ´Ó±àÂëÆ÷codec_context ¸´ÖÆ²ÎÊıµ½´ËÂëÁ÷
+	 * @param codec_context ±àÂëÆ÷
+	 * @return ´íÎóÂë£¬¿ÉÊ¹ÓÃ reCode2Msg »ñÈ¡´íÎóĞÅÏ¢
 	 */
-	int copyParametersFrom(const enCodecContext &codec_context);
+	int copyParametersFrom(const enCodecContext& codec_context);
 
 	/**
-	 * ä»å¦ä¸€ä¸ªç æµst å¤åˆ¶å‚æ•°åˆ°æ­¤ç æµ
-	 * @param st å¦ä¸€ä¸ªç æµ
-	 * @return é”™è¯¯ç ï¼Œå¯ä½¿ç”¨ reCode2Msg è·å–é”™è¯¯ä¿¡æ¯
+	 * ´ÓÁíÒ»¸öÂëÁ÷st ¸´ÖÆ²ÎÊıµ½´ËÂëÁ÷
+	 * @param st ÁíÒ»¸öÂëÁ÷
+	 * @return ´íÎóÂë£¬¿ÉÊ¹ÓÃ reCode2Msg »ñÈ¡´íÎóĞÅÏ¢
 	 */
-	int copyParametersFrom(const stream &st);
+	int copyParametersFrom(const stream& st);
 
-	int copyParametersTo(const stream &st);
+	int copyParametersTo(const stream& st);
 
 	/**
-	 * å°†æ­¤ç æµå‚æ•°å¤åˆ¶åˆ°deCodecContext
+	 * ½«´ËÂëÁ÷²ÎÊı¸´ÖÆµ½deCodecContext
 	 * @param codec_context
 	 * @return
 	 */
 	int copyParametersTo(const deCodecContext& codec_context);
 
-	int copyParametersTo(const enCodecContext &codec_context);
+	int copyParametersTo(const enCodecContext& codec_context);
 
 	/**
-	 * è·å–æ­¤ç æµå¯¹è±¡çš„AVStream*
+	 * »ñÈ¡´ËÂëÁ÷¶ÔÏóµÄAVStream*
 	 * @return
 	 */
-	AVStream *ffStream() const;
+	AVStream* ffStream() const;
 
 	/**
-	 * è·å–æ­¤ç æµå¯¹è±¡çš„ç¼–ç å™¨ç±»å‹AVCodecID
+	 * »ñÈ¡´ËÂëÁ÷¶ÔÏóµÄ±àÂëÆ÷ÀàĞÍAVCodecID
 	 * @return
 	 */
 	AVCodecID ffCodecID();
 
+	const AVCodec* ffDeCodec();
+
+	const AVCodec* ffEnCodec();
+
+	const AVCodecParameters* ffCodecPara();
+
 	/**
-	 * è·å–æ—¶é—´åŸº
+	 * »ñÈ¡Ê±¼ä»ù
 	 * @return
 	 */
 	AVRational timebase();
 
 	/**
-	 * è·å–ç æµåœ¨æ–‡ä»¶formatContextä¸­çš„ç´¢å¼•
+	 * »ñÈ¡ÂëÁ÷ÔÚÎÄ¼şformatContextÖĞµÄË÷Òı
 	 * @return
 	 */
 	int index();
 
-	const AVCodec *ffDeCodec();
-
-	const AVCodec *ffEnCodec();
+	/**
+	 * @brief »ñÈ¡±àÂëÆ÷Ãû³Æ
+	 *
+	 * @return std::string
+	 */
+	std::string codecName();
 
 	/**
-	 * ä¸ºè§†é¢‘æµæ—¶ï¼Œè·å–å®½åº¦
+	 * @brief »ñÈ¡±àÂëÆ÷ÅäÖÃĞÅÏ¢
+	 *
+	 * @return std::string
+	 */
+	std::string profile();
+
+	/**
+	 * @brief »ñÈ¡ÂëÁ÷ÂëÂÊ
+	 *
+	 * @return int
+	 */
+	int bitrate() const;
+
+	/**
+	 * ÊÓÆµÁ÷Ê±£¬ÎªÏñËØ¸ñÊ½ AVPixelFormat
+	 * ÒôÆµÁ÷Ê±£¬Îª²ÉÑù¸ñÊ½ AVSampleFormat
+	 * @return
+	 */
+	int format()const;
+
+	/**
+	 * @brief »ñÈ¡¸ñÊ½Ãû³Æ
+	 *
+	 * @return std::string
+	 */
+	std::string format_name();
+
+	/**
+	 * ÎªÊÓÆµÁ÷Ê±£¬»ñÈ¡¿í¶È
 	 * @return
 	 */
 	int width() const;
 
 	/**
-	 * ä¸ºè§†é¢‘æµæ—¶ï¼Œè·å–é«˜åº¦
+	 * ÎªÊÓÆµÁ÷Ê±£¬»ñÈ¡¸ß¶È
 	 * @return
 	 */
 	int height() const;
 
 	/**
-	 * è§†é¢‘æµæ—¶ï¼Œä¸ºåƒç´ æ ¼å¼ AVPixelFormat
-	 * éŸ³é¢‘æµæ—¶ï¼Œä¸ºé‡‡æ ·æ ¼å¼ AVSampleFormat
-	 * @return
+	 * @brief »ñÈ¡Ö¡ÂÊ
+	 *
+	 * @return double
 	 */
-	int format()const;
+	double fps();
 
+	/**
+	 * @brief »ñÈ¡²ÉÑùÂÊ
+	 *
+	 * @return int
+	 */
 	int sampleRate() const;
 
+	/**
+	 * @brief »ñÈ¡ÉùµÀÊı
+	 *
+	 * @return int
+	 */
 	int channels() const;
 
+	/**
+	 * @brief »ñÈ¡²ÉÑùµãÊı
+	 *
+	 * @return int
+	 */
 	int samples() const;
 
-	const AVCodecParameters * ffCodecPara();
-
 private:
-	AVStream *stream_ = nullptr;
+	AVStream* stream_ = nullptr;
 };
 
 

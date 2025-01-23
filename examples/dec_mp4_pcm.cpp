@@ -71,7 +71,11 @@ int main(int argc, char **argv)
 	printf("audio sample rate: %d\n", ifmtctx.audioStream().sampleRate());
 	printf("audio channels: %d\n", ifmtctx.audioStream().channels());
 	printf("audio format: %s\n", sampleFormat2Str(AV_SAMPLE_FMT_FLTP));
-	printf("test cmd: %s\n", "ffplay -ar 48000 -ac 2 -f f32le out_48000_2_f32le.pcm");
+	printf("test cmd: ffplay -ar 48000 -ac 2 -f f32le %d_%d_%s.pcm\n",
+	       ifmtctx.audioStream().sampleRate(),
+	       ifmtctx.audioStream().channels(),
+	       sampleFormat2Str(AV_SAMPLE_FMT_FLTP)
+	);
 
 	return 0;
 }

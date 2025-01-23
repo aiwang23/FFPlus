@@ -157,6 +157,41 @@ public:
 	 */
 	int audioStreamIndex();
 
+	/**
+	 * @brief 获取文件路径
+	 * 
+	 * @return std::string 文件路径
+	 */
+	std::string url();
+
+	/**
+	 * @brief 获取封装格式名称
+	 * 
+	 * @return std::string 封装格式名称
+	 */
+	std::string format_name();
+
+	/**
+	 * @brief 获取文件大小, 单位为byte
+	 * 
+	 * @return int64_t 
+	 */
+	int64_t filesize() const;
+
+	/**
+	 * @brief 获取文件总时长, 单位为秒
+	 * 
+	 * @return double 
+	 */
+	double duration() const;
+
+	/**
+	 * @brief 获取文件码率, 单位为bit/s
+	 * 
+	 * @return int 
+	 */
+	int bitrate() const;
+
 private:
 	AVFormatContext *fmt_context_ = nullptr;
 	fileType open_file_t_ = fileType::NONE;
