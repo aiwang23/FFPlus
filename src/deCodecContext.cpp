@@ -44,6 +44,24 @@ deCodecContext::deCodecContext(const stream &st)
 		printErrMsg(__FUNCTION__, __LINE__, rs);
 }
 
+deCodecContext & deCodecContext::operator=(const deCodecContext &ctx)
+{
+	if (!ctx.codec_context_)
+	{
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
+		return *this;
+	}
+
+	if (this != &ctx)
+	{
+		close();
+		codec_context_ = ctx.codec_context_;
+		ctx.is_moved_ = true;
+	}
+
+	return *this;
+}
+
 
 deCodecContext::~deCodecContext()
 {

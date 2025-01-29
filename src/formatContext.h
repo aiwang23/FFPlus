@@ -47,6 +47,8 @@ public:
 	 */
 	explicit formatContext(const char *url, const AVInputFormat *fmt = nullptr, dictionary dict = {});
 
+	formatContext &operator =(const formatContext &fmt);
+
 	~formatContext();
 
 	/**

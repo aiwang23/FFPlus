@@ -37,6 +37,8 @@ public:
 	 */
 	deCodecContext(const stream &st);
 
+	deCodecContext& operator=(const deCodecContext &ctx);
+
 	~deCodecContext();
 
 	/**

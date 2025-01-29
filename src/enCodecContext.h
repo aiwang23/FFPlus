@@ -74,6 +74,8 @@ public:
 
 	enCodecContext(audioEnCodecConfig config = {}, dictionary dict = {});
 
+	enCodecContext & operator=(const enCodecContext & ctx);
+
 	~enCodecContext();
 
 	/**

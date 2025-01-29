@@ -28,6 +28,24 @@ packet::packet(const packet &pkt)
 	pkt.is_moved_ = true;
 }
 
+packet & packet::operator=(const packet &pkt)
+{
+	if (!pkt.packet_)
+	{
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR(EINVAL));
+		return *this;
+	}
+
+	if (this != &pkt)
+	{
+		free();
+		packet_ = pkt.packet_;
+		pkt.is_moved_ = true;
+	}
+
+	return *this;
+}
+
 AVPacket *packet::ffPacket() const
 {
 	return packet_;

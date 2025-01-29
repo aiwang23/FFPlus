@@ -21,6 +21,8 @@ public:
 
 	packet(const packet &pkt);
 
+	packet& operator=(const packet &pkt);
+
 	/**
 	 *
 	 * @return packet 的 AVPacket*

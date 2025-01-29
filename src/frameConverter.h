@@ -65,6 +65,8 @@ public:
 	 */
 	frameConverter(audioConvertConfig config);
 
+	frameConverter & operator=(const frameConverter & cnt);
+
 	~frameConverter();
 
 	int alloc(videoConvertConfig config);

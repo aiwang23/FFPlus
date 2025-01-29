@@ -34,6 +34,25 @@ enCodecContext::enCodecContext(audioEnCodecConfig config, dictionary dict)
 	open(config, dict);
 }
 
+enCodecContext & enCodecContext::operator=(const enCodecContext &ctx)
+{
+	if (!ctx.codec_context_)
+	{
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
+		return *this;
+	}
+
+	if (this != &ctx)
+	{
+		close();
+		codec_context_ = ctx.codec_context_;
+		ctx.is_moved_ = true;
+		return *this;
+	}
+
+	return *this;
+}
+
 enCodecContext::~enCodecContext()
 {
 	close();

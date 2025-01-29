@@ -33,6 +33,25 @@ formatContext::formatContext(const char *url, const AVInputFormat *fmt, dictiona
 		printErrMsg(__FUNCTION__, __LINE__, rs);
 }
 
+formatContext &formatContext::operator=(const formatContext &fmt)
+{
+	if (!fmt.fmt_context_)
+	{
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
+		return *this;
+	}
+
+	if (this != &fmt)
+	{
+		close();
+		this->fmt_context_ = fmt.fmt_context_;
+		this->open_file_t_ = fmt.open_file_t_;
+		fmt.is_moved_ = true;
+	}
+
+	return *this;
+}
+
 formatContext::~formatContext()
 {
 	close();

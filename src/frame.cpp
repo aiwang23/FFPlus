@@ -31,6 +31,24 @@ frame::frame(int nb_samples, int channels, AVSampleFormat sample_fmt) : frame()
 	newBuffer(nb_samples, channels, sample_fmt);
 }
 
+frame & frame::operator=(const frame &frm)
+{
+	if (!frm.frame_)
+	{
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR(EINVAL));
+		return *this;
+	}
+
+	if (frm.frame_ != frame_)
+	{
+		free();
+		frame_ = frm.frame_;
+		frm.is_moved_ = true;
+	}
+
+	return *this;
+}
+
 frame::~frame()
 {
 	free();

@@ -36,6 +36,28 @@ frameConverter::frameConverter(audioConvertConfig config)
 	alloc(config);
 }
 
+frameConverter & frameConverter::operator=(const frameConverter &cnt)
+{
+	if (!cnt.swr_context_ && !cnt.sws_context_)
+	{
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR(EINVAL));
+		return *this;
+	}
+
+	if (this != &cnt)
+	{
+		free();
+		if (cnt.type_ == convertType::VIDEO)
+			sws_context_ = cnt.sws_context_;
+		else if (cnt.type_ == convertType::AUDIO)
+			swr_context_ = cnt.swr_context_;
+		type_ = cnt.type_;
+		cnt.is_moved_ = true;
+	}
+
+	return *this;
+}
+
 frameConverter::~frameConverter()
 {
 	free();

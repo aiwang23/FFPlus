@@ -35,6 +35,8 @@ public:
 	 */
 	frame(int nb_samples, int channels, AVSampleFormat sample_fmt);
 
+	frame &operator=(const frame &frm);
+
 	~frame();
 
 	/**

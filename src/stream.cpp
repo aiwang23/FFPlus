@@ -6,24 +6,30 @@
 #include "enCodecContext.h"
 #include "deCodecContext.h"
 
-extern "C"
-{
+extern "C" {
 #include <libavutil/imgutils.h>
 }
 
 stream::stream()
 = default;
 
-stream::stream(AVStream* st)
+stream::stream(AVStream *st)
 {
 	if (st)
 		stream_ = st;
 }
 
+stream &stream::operator=(const stream &st)
+{
+	if (this != &st)
+		stream_ = st.stream_;
+	return *this;
+}
+
 stream::~stream()
 = default;
 
-int stream::copyParametersFrom(const enCodecContext& codec_context)
+int stream::copyParametersFrom(const enCodecContext &codec_context)
 {
 	if (nullptr == stream_)
 	{
@@ -45,7 +51,7 @@ int stream::copyParametersFrom(const enCodecContext& codec_context)
 	return rs;
 }
 
-int stream::copyParametersFrom(const stream& st)
+int stream::copyParametersFrom(const stream &st)
 {
 	if (nullptr == stream_)
 	{
@@ -61,7 +67,7 @@ int stream::copyParametersFrom(const stream& st)
 	return rs;
 }
 
-int stream::copyParametersTo(const stream& st)
+int stream::copyParametersTo(const stream &st)
 {
 	if (nullptr == stream_)
 	{
@@ -77,7 +83,7 @@ int stream::copyParametersTo(const stream& st)
 	return rs;
 }
 
-int stream::copyParametersTo(const deCodecContext& codec_context)
+int stream::copyParametersTo(const deCodecContext &codec_context)
 {
 	if (nullptr == stream_)
 	{
@@ -99,7 +105,7 @@ int stream::copyParametersTo(const deCodecContext& codec_context)
 	return rs;
 }
 
-int stream::copyParametersTo(const enCodecContext& codec_context)
+int stream::copyParametersTo(const enCodecContext &codec_context)
 {
 	if (nullptr == stream_)
 	{
@@ -119,7 +125,7 @@ int stream::copyParametersTo(const enCodecContext& codec_context)
 	return rs;
 }
 
-AVStream* stream::ffStream() const
+AVStream *stream::ffStream() const
 {
 	return stream_;
 }
@@ -131,11 +137,12 @@ AVCodecID stream::ffCodecID()
 		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
 		return AV_CODEC_ID_NONE;
 	}
-	else if (nullptr == stream_->codecpar) {
+	else if (nullptr == stream_->codecpar)
+	{
 		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
 		return AV_CODEC_ID_NONE;
 	}
-	return  stream_->codecpar->codec_id;
+	return stream_->codecpar->codec_id;
 }
 
 AVRational stream::timebase()
@@ -158,12 +165,12 @@ int stream::index()
 	return stream_->index;
 }
 
-const AVCodec* stream::ffDeCodec()
+const AVCodec *stream::ffDeCodec()
 {
 	return findffDeCodec(ffCodecID());
 }
 
-const AVCodec* stream::ffEnCodec()
+const AVCodec *stream::ffEnCodec()
 {
 	return findffEnCodec(ffCodecID());
 }
@@ -175,7 +182,8 @@ int stream::width() const
 		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
 		return -1;
 	}
-	else if (nullptr == stream_->codecpar) {
+	else if (nullptr == stream_->codecpar)
+	{
 		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
 		return -1;
 	}
@@ -189,7 +197,8 @@ int stream::height() const
 		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
 		return -1;
 	}
-	else if (nullptr == stream_->codecpar) {
+	else if (nullptr == stream_->codecpar)
+	{
 		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
 		return -1;
 	}
@@ -213,27 +222,32 @@ std::string stream::format_name()
 		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
 		return {};
 	}
-	else if (nullptr == stream_->codecpar) {
+	else if (nullptr == stream_->codecpar)
+	{
 		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
 		return {};
 	}
 
 	std::string name;
 	if (stream_->codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
-		name = av_get_pix_fmt_name((AVPixelFormat)stream_->codecpar->format);
+		name = av_get_pix_fmt_name((AVPixelFormat) stream_->codecpar->format);
 	else if (stream_->codecpar->codec_type == AVMEDIA_TYPE_AUDIO)
-		name = av_get_sample_fmt_name((AVSampleFormat)stream_->codecpar->format);
+		name = av_get_sample_fmt_name((AVSampleFormat) stream_->codecpar->format);
 	return name;
 }
 
 std::string stream::codecName()
 {
-	return std::string{ avcodec_get_name(ffCodecID()) };
+	return std::string{avcodec_get_name(ffCodecID())};
 }
 
 std::string stream::profile()
 {
-	return std::string{ av_get_profile_name(ffDeCodec(), stream_->codecpar->profile) };
+	if (nullptr == stream_)
+		return {};
+	if (nullptr == stream_->codecpar)
+		return {};
+	return std::string{av_get_profile_name(ffDeCodec(), stream_->codecpar->profile)};
 }
 
 int stream::bitrate() const
@@ -243,7 +257,8 @@ int stream::bitrate() const
 		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
 		return -1;
 	}
-	else if (nullptr == stream_->codecpar) {
+	else if (nullptr == stream_->codecpar)
+	{
 		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
 		return -1;
 	}
@@ -257,7 +272,8 @@ int stream::format() const
 		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
 		return -1;
 	}
-	else if (nullptr == stream_->codecpar) {
+	else if (nullptr == stream_->codecpar)
+	{
 		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
 		return -1;
 	}
@@ -271,7 +287,8 @@ int stream::sampleRate() const
 		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
 		return -1;
 	}
-	else if (nullptr == stream_->codecpar) {
+	else if (nullptr == stream_->codecpar)
+	{
 		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
 		return -1;
 	}
@@ -285,11 +302,13 @@ int stream::channels() const
 		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
 		return -1;
 	}
-	else if (nullptr == stream_->codecpar) {
+	else if (nullptr == stream_->codecpar)
+	{
 		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
 		return -1;
 	}
-	else if (stream_->codecpar->ch_layout.order == AV_CHANNEL_ORDER_UNSPEC) {
+	else if (stream_->codecpar->ch_layout.order == AV_CHANNEL_ORDER_UNSPEC)
+	{
 		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
 		return -1;
 	}
@@ -303,7 +322,8 @@ int stream::samples() const
 		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
 		return -1;
 	}
-	else if (nullptr == stream_->codecpar) {
+	else if (nullptr == stream_->codecpar)
+	{
 		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
 		return -1;
 	}
@@ -320,7 +340,7 @@ bool stream::operator!()
 	return empty();
 }
 
-const AVCodecParameters* stream::ffCodecPara()
+const AVCodecParameters *stream::ffCodecPara()
 {
 	if (nullptr == stream_)
 	{

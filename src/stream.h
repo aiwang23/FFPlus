@@ -25,6 +25,8 @@ public:
 
 	explicit stream(AVStream *st);
 
+	stream& operator=(const stream &st);
+
 	~stream();
 
 	/**
