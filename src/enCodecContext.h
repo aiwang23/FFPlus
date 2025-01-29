@@ -62,6 +62,8 @@ class enCodecContext
 public:
 	enCodecContext();
 
+	enCodecContext(const enCodecContext & ctx);
+
 	/**
 	 * 初始化编码器，配置参数后调用 open 初始化
 	 * 相当于 alloc 和 open 二合一
@@ -143,6 +145,7 @@ public:
 
 private:
 	AVCodecContext *codec_context_ = nullptr;
+	mutable bool is_moved_ = false;
 };
 
 

@@ -23,7 +23,7 @@ class stream
 public:
 	stream();
 
-	explicit stream(AVStream* st);
+	explicit stream(AVStream *st);
 
 	~stream();
 
@@ -32,31 +32,31 @@ public:
 	 * @param codec_context 编码器
 	 * @return 错误码，可使用 reCode2Msg 获取错误信息
 	 */
-	int copyParametersFrom(const enCodecContext& codec_context);
+	int copyParametersFrom(const enCodecContext &codec_context);
 
 	/**
 	 * 从另一个码流st 复制参数到此码流
 	 * @param st 另一个码流
 	 * @return 错误码，可使用 reCode2Msg 获取错误信息
 	 */
-	int copyParametersFrom(const stream& st);
+	int copyParametersFrom(const stream &st);
 
-	int copyParametersTo(const stream& st);
+	int copyParametersTo(const stream &st);
 
 	/**
 	 * 将此码流参数复制到deCodecContext
 	 * @param codec_context
 	 * @return
 	 */
-	int copyParametersTo(const deCodecContext& codec_context);
+	int copyParametersTo(const deCodecContext &codec_context);
 
-	int copyParametersTo(const enCodecContext& codec_context);
+	int copyParametersTo(const enCodecContext &codec_context);
 
 	/**
 	 * 获取此码流对象的AVStream*
 	 * @return
 	 */
-	AVStream* ffStream() const;
+	AVStream *ffStream() const;
 
 	/**
 	 * 获取此码流对象的编码器类型AVCodecID
@@ -64,11 +64,11 @@ public:
 	 */
 	AVCodecID ffCodecID();
 
-	const AVCodec* ffDeCodec();
+	const AVCodec *ffDeCodec();
 
-	const AVCodec* ffEnCodec();
+	const AVCodec *ffEnCodec();
 
-	const AVCodecParameters* ffCodecPara();
+	const AVCodecParameters *ffCodecPara();
 
 	/**
 	 * 获取时间基
@@ -108,7 +108,7 @@ public:
 	 * 音频流时，为采样格式 AVSampleFormat
 	 * @return
 	 */
-	int format()const;
+	int format() const;
 
 	/**
 	 * @brief 获取格式名称
@@ -157,8 +157,20 @@ public:
 	 */
 	int samples() const;
 
+	/**
+	 * 判断此码流是否为空
+	 * @return
+	 */
+	bool empty();
+
+	/**
+	 * 判断此码流是否为空
+	 * @return
+	 */
+	bool operator!();
+
 private:
-	AVStream* stream_ = nullptr;
+	AVStream *stream_ = nullptr;
 };
 
 

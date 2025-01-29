@@ -19,6 +19,8 @@ public:
 
 	~packet();
 
+	packet(const packet &pkt);
+
 	/**
 	 *
 	 * @return packet 的 AVPacket*
@@ -56,6 +58,7 @@ public:
 
 private:
 	AVPacket *packet_ = nullptr;
+	mutable bool is_moved_ = false;
 };
 
 

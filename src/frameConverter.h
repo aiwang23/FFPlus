@@ -51,6 +51,8 @@ private:
 public:
 	frameConverter();
 
+	frameConverter(const frameConverter & cnt);
+
 	/**
 	 * 初始化视频转换器并填充参数
 	 * @param config 视频参数
@@ -77,6 +79,7 @@ private:
 	SwsContext *sws_context_ = nullptr;
 	SwrContext *swr_context_ = nullptr;
 	convertType type_ = NONE;
+	mutable bool is_moved_ = false;
 };
 
 

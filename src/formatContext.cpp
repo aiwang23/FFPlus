@@ -9,10 +9,24 @@
 
 formatContext::formatContext()
 {
-	fmt_context_ = avformat_alloc_context();
+	// fmt_context_ = avformat_alloc_context();
 }
 
-formatContext::formatContext(const char* url, const AVInputFormat* fmt, dictionary dict)
+formatContext::formatContext(const formatContext &fmt)
+{
+	if (!fmt.fmt_context_)
+	{
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
+		return;
+	}
+
+	close();
+	fmt_context_ = fmt.fmt_context_;
+	open_file_t_ = fmt.open_file_t_;
+	fmt.is_moved_ = true;
+}
+
+formatContext::formatContext(const char *url, const AVInputFormat *fmt, dictionary dict)
 {
 	int rs = openInput(url, fmt, dict);
 	if (rs < 0)
@@ -24,7 +38,7 @@ formatContext::~formatContext()
 	close();
 }
 
-int formatContext::openInput(const char* url, const AVInputFormat* fmt, dictionary dict)
+int formatContext::openInput(const char *url, const AVInputFormat *fmt, dictionary dict)
 {
 	int rs;
 	open_file_t_ = fileType::INPUT;
@@ -46,17 +60,10 @@ int formatContext::openInput(const char* url, const AVInputFormat* fmt, dictiona
 		return rs;
 	}
 
-	// // 获取视频流索引
-	// video_st_idx_ = av_find_best_stream(fmt_context_, AVMEDIA_TYPE_VIDEO,
-	//                                     -1, -1, nullptr, 0);
-	// // 获取音频流索引
-	// audio_st_idx_ = av_find_best_stream(fmt_context_, AVMEDIA_TYPE_AUDIO,
-	//                                     -1, -1, nullptr, 0);
-
 	return 0;
 }
 
-int formatContext::allocOutput(const char* url, const AVOutputFormat* ofmt)
+int formatContext::allocOutput(const char *url, const AVOutputFormat *ofmt)
 {
 	int rs;
 	open_file_t_ = fileType::OUTPUT;
@@ -71,24 +78,24 @@ int formatContext::allocOutput(const char* url, const AVOutputFormat* ofmt)
 	return rs;
 }
 
-stream formatContext::newStream(const AVCodec* codec)
+stream formatContext::newStream(const AVCodec *codec)
 {
 	if (!fmt_context_)
 	{
 		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
 		return {};
 	}
-	AVStream* st = avformat_new_stream(fmt_context_, codec);
+	AVStream *st = avformat_new_stream(fmt_context_, codec);
 	if (!st)
 	{
 		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
 		close();
 		return {};
 	}
-	return stream{ st };
+	return stream{st};
 }
 
-stream formatContext::copyStream(const stream& st)
+stream formatContext::copyStream(const stream &st)
 {
 	if (!fmt_context_)
 	{
@@ -96,7 +103,7 @@ stream formatContext::copyStream(const stream& st)
 		return {};
 	}
 
-	AVStream* newSt = avformat_new_stream(fmt_context_, const_cast<stream&>(st).ffEnCodec());
+	AVStream *newSt = avformat_new_stream(fmt_context_, const_cast<stream &>(st).ffEnCodec());
 	if (!newSt)
 	{
 		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
@@ -104,17 +111,17 @@ stream formatContext::copyStream(const stream& st)
 		return {};
 	}
 
-	if (avcodec_parameters_copy(newSt->codecpar, const_cast<stream&>(st).ffCodecPara()) < 0)
+	if (avcodec_parameters_copy(newSt->codecpar, const_cast<stream &>(st).ffCodecPara()) < 0)
 	{
 		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
 		close();
 		return {};
 	}
 
-	return stream{ newSt };
+	return stream{newSt};
 }
 
-stream formatContext::copyStream(const enCodecContext& codec_context)
+stream formatContext::copyStream(const enCodecContext &codec_context)
 {
 	if (!fmt_context_)
 	{
@@ -122,7 +129,7 @@ stream formatContext::copyStream(const enCodecContext& codec_context)
 		return {};
 	}
 
-	AVStream* newSt = avformat_new_stream(fmt_context_, codec_context.ffCodec());
+	AVStream *newSt = avformat_new_stream(fmt_context_, codec_context.ffCodec());
 	if (!newSt)
 	{
 		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
@@ -138,7 +145,7 @@ stream formatContext::copyStream(const enCodecContext& codec_context)
 		return {};
 	}
 
-	return stream{ newSt };
+	return stream{newSt};
 }
 
 int formatContext::openOutput()
@@ -154,7 +161,7 @@ int formatContext::openOutput()
 	if (!(fmt_context_->oformat->flags & AVFMT_NOFILE))
 	{
 		rs = avio_open2(&fmt_context_->pb, fmt_context_->url, AVIO_FLAG_WRITE,
-			nullptr, nullptr);
+		                nullptr, nullptr);
 		if (rs < 0)
 		{
 			printErrMsg(__FUNCTION__, __LINE__, rs);
@@ -176,6 +183,9 @@ int formatContext::openOutput()
 
 void formatContext::close()
 {
+	if (is_moved_)
+		return;
+
 	if (fileType::INPUT == open_file_t_)
 	{
 		if (fmt_context_)
@@ -206,7 +216,7 @@ stream formatContext::streamAt(int idx)
 		return {};
 	}
 
-	return stream{ fmt_context_->streams[idx] };
+	return stream{fmt_context_->streams[idx]};
 }
 
 stream formatContext::videoStream()
@@ -232,7 +242,7 @@ void formatContext::dump()
 	av_dump_format(fmt_context_, 0, fmt_context_->url, (open_file_t_ == fileType::OUTPUT));
 }
 
-int formatContext::read(const packet& pkt)
+int formatContext::read(const packet &pkt)
 {
 	int rs;
 	rs = av_read_frame(fmt_context_, pkt.ffPacket());
@@ -242,7 +252,7 @@ int formatContext::read(const packet& pkt)
 	return rs;
 }
 
-int formatContext::write(const packet& pkt)
+int formatContext::write(const packet &pkt)
 {
 	int rs;
 	rs = av_interleaved_write_frame(fmt_context_, pkt.ffPacket());
@@ -260,13 +270,13 @@ stream formatContext::operator[](int idx)
 int formatContext::videoStreamIndex()
 {
 	return av_find_best_stream(fmt_context_, AVMEDIA_TYPE_VIDEO,
-		-1, -1, nullptr, 0);
+	                           -1, -1, nullptr, 0);
 }
 
 int formatContext::audioStreamIndex()
 {
 	return av_find_best_stream(fmt_context_, AVMEDIA_TYPE_AUDIO,
-		-1, -1, nullptr, 0);
+	                           -1, -1, nullptr, 0);
 }
 
 std::string formatContext::url()
@@ -277,14 +287,14 @@ std::string formatContext::url()
 std::string formatContext::format_name()
 {
 	return std::string{
-		open_file_t_ == fileType::INPUT ?
-		fmt_context_->iformat->name :
-		fmt_context_->oformat->name
+		open_file_t_ == fileType::INPUT ? fmt_context_->iformat->name : fmt_context_->oformat->name
 	};
 }
 
 int64_t formatContext::filesize() const
 {
+	if (!fmt_context_)
+		return -1;
 	if (!fmt_context_->pb)
 		return -1;
 	return avio_size(fmt_context_->pb);
@@ -292,12 +302,14 @@ int64_t formatContext::filesize() const
 
 double formatContext::duration() const
 {
-    return fmt_context_->duration / AV_TIME_BASE;
+	if (!fmt_context_)
+		return -1;
+	return fmt_context_->duration / AV_TIME_BASE;
 }
 
 int formatContext::bitrate() const
 {
-    return fmt_context_->bit_rate;
+	if (!fmt_context_)
+		return -1;
+	return fmt_context_->bit_rate;
 }
-
-

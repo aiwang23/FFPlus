@@ -67,7 +67,7 @@ int main(int argc, char **argv)
 	printf("video height: %d\n", ifmtctx.videoStream().height());
 	printf("video format: %s\n", pixFormat2Str(AV_PIX_FMT_YUV420P));
 	printf("test cmd: %s\n",
-		   "ffplay -f rawvideo -video_size 640x480 -pixel_format yuv420p -i out_640x480_yuv420p.yuv");
+		   "ffplay -f rawvideo -video_size 640x480 -pixel_format yuv420p -i 640x480_yuv420p.yuv");
 
 	return 0;
 }

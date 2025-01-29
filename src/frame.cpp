@@ -11,6 +11,16 @@ frame::frame()
 	frame_ = av_frame_alloc();
 }
 
+frame::frame(const frame &frm)
+{
+	if (!frm.frame_)
+		return;
+
+	free();
+	frame_ = frm.frame_;
+	frm.is_moved_ = true;
+}
+
 frame::frame(int width, int height, AVPixelFormat pix_fmt) : frame()
 {
 	newBuffer(width, height, pix_fmt);
@@ -87,6 +97,9 @@ AVFrame *frame::ffFrame() const
 
 void frame::free()
 {
+	if (is_moved_)
+		return;
+
 	if (frame_)
 		av_frame_free(&frame_);
 }
@@ -98,36 +111,50 @@ void frame::unref()
 
 uint8_t **frame::data() const
 {
+	if (!frame_)
+		return nullptr;
 	return frame_->data;
 }
 
 uint8_t *frame::data(int index) const
 {
+	if (!frame_)
+		return nullptr;
 	return frame_->data[index];
 }
 
 int *frame::linesize() const
 {
+	if (!frame_)
+		return nullptr;
 	return frame_->linesize;
 }
 
 int frame::linesize(int index) const
 {
+	if (!frame_)
+		return -1;
 	return frame_->linesize[index];
 }
 
 int frame::width() const
 {
+	if (!frame_)
+		return -1;
 	return frame_->width;
 }
 
 int frame::height() const
 {
+	if (!frame_)
+		return -1;
 	return frame_->height;
 }
 
 int frame::nb_samples() const
 {
+	if (!frame_)
+		return -1;
 	return frame_->nb_samples;
 }
 
@@ -138,16 +165,37 @@ void frame::setPts(int pts)
 
 int frame::channels() const
 {
+	if (!frame_)
+	{
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR(ENOMEM));
+		return -1;
+	}
+	else if (!frame_->ch_layout.order)
+	{
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR(EINVAL));
+		return -1;
+	}
 	return frame_->ch_layout.nb_channels;
 }
 
 int frame::format() const
 {
+	if (!frame_)
+	{
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR(ENOMEM));
+		return -1;
+	}
 	return frame_->format;
 }
 
 int frame::bufferSize()
 {
+	if (!frame_)
+	{
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR(ENOMEM));
+		return -1;
+	}
+
 	int dst_bufsize = av_samples_get_buffer_size(frame_->linesize,
 	                                             frame_->ch_layout.nb_channels,
 	                                             frame_->nb_samples,

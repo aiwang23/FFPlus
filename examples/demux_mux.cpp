@@ -15,7 +15,9 @@ int main(int argc, char **argv)
 	printErrMsg(__FUNCTION__, __LINE__, 0);
 
 	// 打开输入文件
-	formatContext ifmtctx(argv[1]);
+	// formatContext ifmtctx(argv[1]);
+	// formatContext ifmtctx(formatContext{argv[1]});
+	formatContext ifmtctx = formatContext{argv[1]};
 	// 打印输入文件信息
 	ifmtctx.dump();
 

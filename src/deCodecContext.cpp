@@ -12,6 +12,19 @@
 deCodecContext::deCodecContext()
 = default;
 
+deCodecContext::deCodecContext(const deCodecContext &ctx)
+{
+	if (!ctx.codec_context_)
+	{
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
+		return;
+	}
+
+	close();
+	codec_context_ = ctx.codec_context_;
+	ctx.is_moved_ = true;
+}
+
 deCodecContext::deCodecContext(const stream &st)
 {
 	int rs;
@@ -114,6 +127,8 @@ int deCodecContext::receive(const frame &outFrame)
 
 void deCodecContext::close()
 {
+	if (is_moved_)
+		return;
 	if (codec_context_)
 		avcodec_free_context(&codec_context_);
 }

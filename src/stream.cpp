@@ -126,16 +126,35 @@ AVStream* stream::ffStream() const
 
 AVCodecID stream::ffCodecID()
 {
-	return stream_->codecpar->codec_id;
+	if (nullptr == stream_)
+	{
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
+		return AV_CODEC_ID_NONE;
+	}
+	else if (nullptr == stream_->codecpar) {
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
+		return AV_CODEC_ID_NONE;
+	}
+	return  stream_->codecpar->codec_id;
 }
 
 AVRational stream::timebase()
 {
+	if (nullptr == stream_)
+	{
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
+		return {};
+	}
 	return stream_->time_base;
 }
 
 int stream::index()
 {
+	if (nullptr == stream_)
+	{
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
+		return -1;
+	}
 	return stream_->index;
 }
 
@@ -151,21 +170,54 @@ const AVCodec* stream::ffEnCodec()
 
 int stream::width() const
 {
+	if (nullptr == stream_)
+	{
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
+		return -1;
+	}
+	else if (nullptr == stream_->codecpar) {
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
+		return -1;
+	}
 	return stream_->codecpar->width;
 }
 
 int stream::height() const
 {
+	if (nullptr == stream_)
+	{
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
+		return -1;
+	}
+	else if (nullptr == stream_->codecpar) {
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
+		return -1;
+	}
 	return stream_->codecpar->height;
 }
 
 double stream::fps()
 {
+	if (nullptr == stream_)
+	{
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
+		return -1;
+	}
 	return av_q2d(stream_->avg_frame_rate);
 }
 
 std::string stream::format_name()
 {
+	if (nullptr == stream_)
+	{
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
+		return {};
+	}
+	else if (nullptr == stream_->codecpar) {
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
+		return {};
+	}
+
 	std::string name;
 	if (stream_->codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
 		name = av_get_pix_fmt_name((AVPixelFormat)stream_->codecpar->format);
@@ -186,30 +238,94 @@ std::string stream::profile()
 
 int stream::bitrate() const
 {
+	if (nullptr == stream_)
+	{
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
+		return -1;
+	}
+	else if (nullptr == stream_->codecpar) {
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
+		return -1;
+	}
 	return stream_->codecpar->bit_rate;
 }
 
 int stream::format() const
 {
+	if (nullptr == stream_)
+	{
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
+		return -1;
+	}
+	else if (nullptr == stream_->codecpar) {
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
+		return -1;
+	}
 	return stream_->codecpar->format;
 }
 
 int stream::sampleRate() const
 {
+	if (nullptr == stream_)
+	{
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
+		return -1;
+	}
+	else if (nullptr == stream_->codecpar) {
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
+		return -1;
+	}
 	return stream_->codecpar->sample_rate;
 }
 
 int stream::channels() const
 {
+	if (nullptr == stream_)
+	{
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
+		return -1;
+	}
+	else if (nullptr == stream_->codecpar) {
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
+		return -1;
+	}
+	else if (stream_->codecpar->ch_layout.order == AV_CHANNEL_ORDER_UNSPEC) {
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
+		return -1;
+	}
 	return stream_->codecpar->ch_layout.nb_channels;
 }
 
 int stream::samples() const
 {
+	if (nullptr == stream_)
+	{
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
+		return -1;
+	}
+	else if (nullptr == stream_->codecpar) {
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
+		return -1;
+	}
 	return stream_->codecpar->frame_size;
+}
+
+bool stream::empty()
+{
+	return nullptr == stream_;
+}
+
+bool stream::operator!()
+{
+	return empty();
 }
 
 const AVCodecParameters* stream::ffCodecPara()
 {
+	if (nullptr == stream_)
+	{
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
+		return nullptr;
+	}
 	return stream_->codecpar;
 }

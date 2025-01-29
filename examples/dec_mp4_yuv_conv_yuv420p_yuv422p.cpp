@@ -31,7 +31,7 @@ int main(int argc, char **argv)
 	// 创建并打开视频解码器
 	deCodecContext vde_ctx(ifmtctx.videoStream());
 
-	frameConverter vconv(videoConvertConfig{
+	frameConverter vconv = (videoConvertConfig{
 		ifmtctx.videoStream().width(),
 		ifmtctx.videoStream().height(),
 		(AVPixelFormat) ifmtctx.videoStream().format(),

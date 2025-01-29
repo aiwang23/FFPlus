@@ -10,6 +10,18 @@
 enCodecContext::enCodecContext()
 = default;
 
+enCodecContext::enCodecContext(const enCodecContext &ctx)
+{
+	if (!ctx.codec_context_)
+	{
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
+		return;
+	}
+	close();
+	codec_context_ = ctx.codec_context_;
+	ctx.is_moved_ = true;
+}
+
 enCodecContext::enCodecContext(videoEnCodecConfig config, dictionary dict)
 {
 	alloc(config.codec_id);
@@ -190,6 +202,9 @@ int enCodecContext::receive(const packet &outPacket)
 
 void enCodecContext::close()
 {
+	if (is_moved_)
+		return;
+
 	if (codec_context_)
 		avcodec_free_context(&codec_context_);
 }

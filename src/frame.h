@@ -17,6 +17,8 @@ class frame
 public:
 	frame();
 
+	frame(const frame &frm);
+
 	/**
 	 * 初始化视频帧并分配缓冲区
 	 * @param width 宽
@@ -93,6 +95,7 @@ public:
 
 private:
 	AVFrame *frame_ = nullptr;
+	mutable bool is_moved_ = false;
 };
 
 

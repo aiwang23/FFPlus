@@ -21,12 +21,14 @@ class packet;
  * 调用顺序：
  * alloc -> open -> send/receive ->close
  *
- * TODO
+ *
  */
 class deCodecContext
 {
 public:
 	deCodecContext();
+
+	deCodecContext(const deCodecContext &ctx);
 
 	/**
 	 * alloc copyParametersFrom open 三合一
@@ -86,6 +88,7 @@ public:
 
 private:
 	AVCodecContext *codec_context_ = nullptr;
+	mutable  bool is_moved_ = false;
 };
 
 

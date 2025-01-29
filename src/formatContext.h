@@ -37,6 +37,8 @@ class formatContext
 public:
 	explicit formatContext();
 
+	formatContext(const formatContext &fmt);
+
 	/**
 	 * 快速打开输入文件
 	 * @param url 文件路径
@@ -85,7 +87,7 @@ public:
 	 * @param codec_context 编码器
 	 * @return stream 新码流
 	 */
-	stream copyStream(const enCodecContext& codec_context);
+	stream copyStream(const enCodecContext &codec_context);
 
 	// stream CopyStream(stream &st);
 
@@ -195,6 +197,7 @@ public:
 private:
 	AVFormatContext *fmt_context_ = nullptr;
 	fileType open_file_t_ = fileType::NONE;
+	mutable bool is_moved_ = false;
 };
 
 

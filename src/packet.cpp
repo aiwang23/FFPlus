@@ -4,6 +4,8 @@
 
 #include "packet.h"
 
+#include "utils.h"
+
 packet::packet()
 {
 	packet_ = av_packet_alloc();
@@ -12,6 +14,18 @@ packet::packet()
 packet::~packet()
 {
 	this->free();
+}
+
+packet::packet(const packet &pkt)
+{
+	if (!pkt.packet_)
+	{
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR(EINVAL));
+		return;
+	}
+	free();
+	packet_ = pkt.packet_;
+	pkt.is_moved_ = true;
 }
 
 AVPacket *packet::ffPacket() const
@@ -27,6 +41,9 @@ void packet::unref()
 
 void packet::free()
 {
+	if (is_moved_)
+		return;
+
 	if (packet_)
 		av_packet_free(&packet_);
 }
