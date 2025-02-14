@@ -4,6 +4,10 @@
 
 #include "deCodecContext.h"
 
+extern "C" {
+#include <libavutil/pixdesc.h>
+}
+
 #include "stream.h"
 
 #include "frame.h"
@@ -44,7 +48,7 @@ deCodecContext::deCodecContext(const stream &st)
 		printErrMsg(__FUNCTION__, __LINE__, rs);
 }
 
-deCodecContext & deCodecContext::operator=(const deCodecContext &ctx)
+deCodecContext &deCodecContext::operator=(const deCodecContext &ctx)
 {
 	if (!ctx.codec_context_)
 	{
@@ -174,4 +178,41 @@ int deCodecContext::copyParametersFrom(const stream &st)
 AVSampleFormat deCodecContext::sampleFormat() const
 {
 	return codec_context_ ? codec_context_->sample_fmt : AV_SAMPLE_FMT_NONE;
+}
+
+AVPixelFormat deCodecContext::getPixFmt(const char *name)
+{
+	return av_get_pix_fmt(name);
+}
+
+int deCodecContext::gopSize()
+{
+	return codec_context_ ? codec_context_->gop_size : -1;
+}
+
+bool deCodecContext::isOpened()
+{
+	return avcodec_is_open(codec_context_) > 0;
+}
+
+std::string deCodecContext::name()
+{
+	if (!codec_context_ || !codec_context_->codec)
+	{
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR(EINVAL));
+		return {};
+	}
+	return codec_context_->codec->name;
+}
+
+std::string deCodecContext::profile()
+{
+	if (!codec_context_ || !codec_context_->codec)
+	{
+		printErrMsg(__FUNCTION__, __LINE__, AVERROR(EINVAL));
+		return {};
+	}
+
+	const char *c_str = av_get_profile_name(codec_context_->codec, codec_context_->profile);
+	return c_str == nullptr ? std::string{} : c_str;
 }

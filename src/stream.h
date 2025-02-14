@@ -16,7 +16,7 @@ class deCodecContext;
 class enCodecContext;
 
 /**
- * ÂëÁ÷
+ * ç æµ
  */
 class stream
 {
@@ -30,23 +30,23 @@ public:
 	~stream();
 
 	/**
-	 * ´Ó±àÂëÆ÷codec_context ¸´ÖÆ²ÎÊıµ½´ËÂëÁ÷
-	 * @param codec_context ±àÂëÆ÷
-	 * @return ´íÎóÂë£¬¿ÉÊ¹ÓÃ reCode2Msg »ñÈ¡´íÎóĞÅÏ¢
+	 * ä»ç¼–ç å™¨codec_context å¤åˆ¶å‚æ•°åˆ°æ­¤ç æµ
+	 * @param codec_context ç¼–ç å™¨
+	 * @return é”™è¯¯ç ï¼Œå¯ä½¿ç”¨ reCode2Msg è·å–é”™è¯¯ä¿¡æ¯
 	 */
 	int copyParametersFrom(const enCodecContext &codec_context);
 
 	/**
-	 * ´ÓÁíÒ»¸öÂëÁ÷st ¸´ÖÆ²ÎÊıµ½´ËÂëÁ÷
-	 * @param st ÁíÒ»¸öÂëÁ÷
-	 * @return ´íÎóÂë£¬¿ÉÊ¹ÓÃ reCode2Msg »ñÈ¡´íÎóĞÅÏ¢
+	 * ä»å¦ä¸€ä¸ªç æµst å¤åˆ¶å‚æ•°åˆ°æ­¤ç æµ
+	 * @param st å¦ä¸€ä¸ªç æµ
+	 * @return é”™è¯¯ç ï¼Œå¯ä½¿ç”¨ reCode2Msg è·å–é”™è¯¯ä¿¡æ¯
 	 */
 	int copyParametersFrom(const stream &st);
 
 	int copyParametersTo(const stream &st);
 
 	/**
-	 * ½«´ËÂëÁ÷²ÎÊı¸´ÖÆµ½deCodecContext
+	 * å°†æ­¤ç æµå‚æ•°å¤åˆ¶åˆ°deCodecContext
 	 * @param codec_context
 	 * @return
 	 */
@@ -55,13 +55,13 @@ public:
 	int copyParametersTo(const enCodecContext &codec_context);
 
 	/**
-	 * »ñÈ¡´ËÂëÁ÷¶ÔÏóµÄAVStream*
+	 * è·å–æ­¤ç æµå¯¹è±¡çš„AVStream*
 	 * @return
 	 */
 	AVStream *ffStream() const;
 
 	/**
-	 * »ñÈ¡´ËÂëÁ÷¶ÔÏóµÄ±àÂëÆ÷ÀàĞÍAVCodecID
+	 * è·å–æ­¤ç æµå¯¹è±¡çš„ç¼–ç å™¨ç±»å‹AVCodecID
 	 * @return
 	 */
 	AVCodecID ffCodecID();
@@ -73,100 +73,100 @@ public:
 	const AVCodecParameters *ffCodecPara();
 
 	/**
-	 * »ñÈ¡Ê±¼ä»ù
+	 * è·å–æ—¶é—´åŸº
 	 * @return
 	 */
 	AVRational timebase();
 
 	/**
-	 * »ñÈ¡ÂëÁ÷ÔÚÎÄ¼şformatContextÖĞµÄË÷Òı
+	 * è·å–ç æµåœ¨æ–‡ä»¶formatContextä¸­çš„ç´¢å¼•
 	 * @return
 	 */
 	int index();
 
 	/**
-	 * @brief »ñÈ¡±àÂëÆ÷Ãû³Æ
+	 * @brief è·å–ç¼–ç å™¨åç§°
 	 *
 	 * @return std::string
 	 */
 	std::string codecName();
 
 	/**
-	 * @brief »ñÈ¡±àÂëÆ÷ÅäÖÃĞÅÏ¢
+	 * @brief è·å–ç¼–ç å™¨é…ç½®ä¿¡æ¯
 	 *
 	 * @return std::string
 	 */
 	std::string profile();
 
 	/**
-	 * @brief »ñÈ¡ÂëÁ÷ÂëÂÊ
+	 * @brief è·å–ç æµç ç‡
 	 *
 	 * @return int
 	 */
 	int bitrate() const;
 
 	/**
-	 * ÊÓÆµÁ÷Ê±£¬ÎªÏñËØ¸ñÊ½ AVPixelFormat
-	 * ÒôÆµÁ÷Ê±£¬Îª²ÉÑù¸ñÊ½ AVSampleFormat
+	 * è§†é¢‘æµæ—¶ï¼Œä¸ºåƒç´ æ ¼å¼ AVPixelFormat
+	 * éŸ³é¢‘æµæ—¶ï¼Œä¸ºé‡‡æ ·æ ¼å¼ AVSampleFormat
 	 * @return
 	 */
 	int format() const;
 
 	/**
-	 * @brief »ñÈ¡¸ñÊ½Ãû³Æ
+	 * @brief è·å–æ ¼å¼åç§°
 	 *
 	 * @return std::string
 	 */
 	std::string format_name();
 
 	/**
-	 * ÎªÊÓÆµÁ÷Ê±£¬»ñÈ¡¿í¶È
+	 * ä¸ºè§†é¢‘æµæ—¶ï¼Œè·å–å®½åº¦
 	 * @return
 	 */
 	int width() const;
 
 	/**
-	 * ÎªÊÓÆµÁ÷Ê±£¬»ñÈ¡¸ß¶È
+	 * ä¸ºè§†é¢‘æµæ—¶ï¼Œè·å–é«˜åº¦
 	 * @return
 	 */
 	int height() const;
 
 	/**
-	 * @brief »ñÈ¡Ö¡ÂÊ
+	 * @brief è·å–å¸§ç‡
 	 *
 	 * @return double
 	 */
 	double fps();
 
 	/**
-	 * @brief »ñÈ¡²ÉÑùÂÊ
+	 * @brief è·å–é‡‡æ ·ç‡
 	 *
 	 * @return int
 	 */
 	int sampleRate() const;
 
 	/**
-	 * @brief »ñÈ¡ÉùµÀÊı
+	 * @brief è·å–å£°é“æ•°
 	 *
 	 * @return int
 	 */
 	int channels() const;
 
 	/**
-	 * @brief »ñÈ¡²ÉÑùµãÊı
+	 * @brief è·å–é‡‡æ ·ç‚¹æ•°
 	 *
 	 * @return int
 	 */
 	int samples() const;
 
 	/**
-	 * ÅĞ¶Ï´ËÂëÁ÷ÊÇ·ñÎª¿Õ
+	 * åˆ¤æ–­æ­¤ç æµæ˜¯å¦ä¸ºç©º
 	 * @return
 	 */
 	bool empty();
 
 	/**
-	 * ÅĞ¶Ï´ËÂëÁ÷ÊÇ·ñÎª¿Õ
+	 * åˆ¤æ–­æ­¤ç æµæ˜¯å¦ä¸ºç©º
 	 * @return
 	 */
 	bool operator!();

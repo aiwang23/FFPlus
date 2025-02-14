@@ -31,7 +31,7 @@ typedef struct _TDeviceName
 	WCHAR MonikerName[MAX_MONIKER_NAME_LENGTH];
 } TDeviceName;
 
-std::string reCode2Msg(int rsCode)
+std::string rsCode2Msg(int rsCode)
 {
 	char err_s[128] = {0};
 	av_strerror(rsCode, err_s, 128);
@@ -44,7 +44,7 @@ std::string reCode2Msg(int rsCode)
 
 void printErrMsg(const char *funName, int line, int rsCode)
 {
-	fprintf(stderr, "[PrintErrMsg](%s:%d) %s\n", funName, line, reCode2Msg(rsCode).c_str());
+	fprintf(stderr, "[PrintErrMsg](%s:%d) %s\n", funName, line, rsCode2Msg(rsCode).c_str());
 	// char err_s[128] = {0};
 	// av_strerror(rsCode, err_s, 128);
 	// fprintf(stderr, "[PrintErrMsg](%s:%d) %s\n", funName, line, err_s);

@@ -91,7 +91,6 @@ public:
 	 */
 	stream copyStream(const enCodecContext &codec_context);
 
-	// stream CopyStream(stream &st);
 
 	/**
 	 * 创建并打开输出文件
@@ -192,14 +191,17 @@ public:
 	/**
 	 * @brief 获取文件码率, 单位为bit/s
 	 * 
-	 * @return int 
+	 * @return long long
 	 */
-	int bitrate() const;
+	long long bitrate() const;
+
+	
 
 private:
 	AVFormatContext *fmt_context_ = nullptr;
 	fileType open_file_t_ = fileType::NONE;
 	mutable bool is_moved_ = false;
+	bool is_wrote_head = false;
 };
 
 

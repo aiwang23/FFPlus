@@ -171,3 +171,18 @@ void frameConverter::free()
 	if (swr_context_)
 		swr_free(&swr_context_);
 }
+
+AVPixelFormat frameConverter::getPixFmt(const char* name)
+{
+	return av_get_pix_fmt(name);
+}
+
+AVSampleFormat frameConverter::getSampleFmt(const char* name)
+{
+    return av_get_sample_fmt(name);
+}
+
+bool frameConverter::isAlloced()
+{
+	return sws_context_ || swr_context_;
+}

@@ -8,6 +8,8 @@
 extern "C" {
 #include <libswscale/swscale.h>
 #include <libswresample/swresample.h>
+#include <libavutil/pixdesc.h>
+#include <libavutil/samplefmt.h>
 }
 
 // auto a = sws_getContext();
@@ -76,6 +78,11 @@ public:
 	int convert(const frame &inFrame, const frame &outFrame);
 
 	void free();
+
+	static AVPixelFormat getPixFmt(const char *name);
+	static AVSampleFormat getSampleFmt(const char *name);
+
+	bool isAlloced();
 
 private:
 	SwsContext *sws_context_ = nullptr;

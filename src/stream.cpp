@@ -43,7 +43,7 @@ int stream::copyParametersFrom(const enCodecContext &codec_context)
 		return AVERROR_UNKNOWN;
 	}
 
-	// 复制参数
+	// 澶嶅埗鍙傛暟
 	int rs = avcodec_parameters_from_context(stream_->codecpar, codec_context.ffCodecContext());
 	if (rs < 0)
 		printErrMsg(__FUNCTION__, __LINE__, rs);
@@ -59,7 +59,7 @@ int stream::copyParametersFrom(const stream &st)
 		return AVERROR_UNKNOWN;
 	}
 
-	// 复制参数
+	// 澶嶅埗鍙傛暟
 	int rs = avcodec_parameters_copy(stream_->codecpar, st.ffStream()->codecpar);
 	if (rs < 0)
 		printErrMsg(__FUNCTION__, __LINE__, rs);
@@ -75,7 +75,7 @@ int stream::copyParametersTo(const stream &st)
 		return AVERROR_UNKNOWN;
 	}
 
-	// 复制参数
+	// 澶嶅埗鍙傛暟
 	int rs = avcodec_parameters_copy(st.ffStream()->codecpar, stream_->codecpar);
 	if (rs < 0)
 		printErrMsg(__FUNCTION__, __LINE__, rs);
@@ -97,7 +97,7 @@ int stream::copyParametersTo(const deCodecContext &codec_context)
 		return AVERROR_UNKNOWN;
 	}
 
-	// 复制参数
+	// 澶嶅埗鍙傛暟
 	int rs = avcodec_parameters_to_context(codec_context.ffCodecContext(), stream_->codecpar);
 	if (rs < 0)
 		printErrMsg(__FUNCTION__, __LINE__, rs);
@@ -117,7 +117,7 @@ int stream::copyParametersTo(const enCodecContext &codec_context)
 		printErrMsg(__FUNCTION__, __LINE__, AVERROR_UNKNOWN);
 		return AVERROR_UNKNOWN;
 	}
-	// 复制参数
+	// 澶嶅埗鍙傛暟
 	int rs = avcodec_parameters_to_context(codec_context.ffCodecContext(), stream_->codecpar);
 	if (rs < 0)
 		printErrMsg(__FUNCTION__, __LINE__, rs);

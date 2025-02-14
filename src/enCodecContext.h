@@ -70,9 +70,9 @@ public:
 	 * @param config
 	 * @param dict
 	 */
-	enCodecContext(videoEnCodecConfig config = {}, dictionary dict = {});
+	enCodecContext(videoEnCodecConfig config, dictionary dict = {});
 
-	enCodecContext(audioEnCodecConfig config = {}, dictionary dict = {});
+	enCodecContext(audioEnCodecConfig config, dictionary dict = {});
 
 	enCodecContext & operator=(const enCodecContext & ctx);
 
@@ -144,6 +144,10 @@ public:
 	int copyParametersFrom(const stream &st);
 
 	AVRational timebase();
+
+	static AVPixelFormat getPixFmt(const char *name);
+
+	bool isOpened();
 
 private:
 	AVCodecContext *codec_context_ = nullptr;

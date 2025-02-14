@@ -196,6 +196,7 @@ int formatContext::openOutput()
 		close();
 		return rs;
 	}
+	is_wrote_head = true;
 
 	return rs;
 }
@@ -212,9 +213,9 @@ void formatContext::close()
 	}
 	else if (fileType::OUTPUT == open_file_t_)
 	{
-		if (fmt_context_)
+		if (fmt_context_ && is_wrote_head)
 			av_write_trailer(fmt_context_);
-		if (fmt_context_)
+		if (fmt_context_ && fmt_context_->pb)
 			avio_close(fmt_context_->pb);
 		if (fmt_context_)
 			avformat_free_context(fmt_context_);
@@ -326,7 +327,7 @@ double formatContext::duration() const
 	return fmt_context_->duration / AV_TIME_BASE;
 }
 
-int formatContext::bitrate() const
+long long formatContext::bitrate() const
 {
 	if (!fmt_context_)
 		return -1;

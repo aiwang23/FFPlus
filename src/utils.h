@@ -29,7 +29,7 @@ public:
  * @param rsCode 错误码
  * @return 错误信息
  */
-std::string reCode2Msg(int rsCode);
+std::string rsCode2Msg(int rsCode);
 
 /**
  * 打印错误信息

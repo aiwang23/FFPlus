@@ -3,6 +3,11 @@
 //
 
 #include "enCodecContext.h"
+
+extern "C" {
+#include <libavutil/pixdesc.h>
+}
+
 #include "stream.h"
 #include "frame.h"
 #include "packet.h"
@@ -34,7 +39,7 @@ enCodecContext::enCodecContext(audioEnCodecConfig config, dictionary dict)
 	open(config, dict);
 }
 
-enCodecContext & enCodecContext::operator=(const enCodecContext &ctx)
+enCodecContext &enCodecContext::operator=(const enCodecContext &ctx)
 {
 	if (!ctx.codec_context_)
 	{
@@ -251,4 +256,14 @@ int enCodecContext::copyParametersFrom(const stream &st)
 AVRational enCodecContext::timebase()
 {
 	return codec_context_ ? codec_context_->time_base : AVRational{0, 1};
+}
+
+AVPixelFormat enCodecContext::getPixFmt(const char *name)
+{
+	return av_get_pix_fmt(name);
+}
+
+bool enCodecContext::isOpened()
+{
+	return avcodec_is_open(codec_context_) > 0;
 }

@@ -19,7 +19,7 @@ class packet;
  * 解码器
  *
  * 调用顺序：
- * alloc -> open -> send/receive ->close
+ * alloc -> copyParametersFrom -> open -> send/receive ->close
  *
  *
  */
@@ -87,6 +87,20 @@ public:
 	int copyParametersFrom(const stream &st);
 
 	AVSampleFormat sampleFormat() const;
+
+	static AVPixelFormat getPixFmt(const char *name);
+
+	int gopSize();
+
+	bool isOpened();
+
+	/**
+	 * 获取解码器名称
+	 * @return
+	 */
+	std::string name();
+
+	std::string profile();
 
 private:
 	AVCodecContext *codec_context_ = nullptr;
